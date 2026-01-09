@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from generate_page import generate_pages_recursive
 
@@ -33,20 +34,27 @@ def main():
     # Get the root directory (where the script is run from)
     root_dir = os.path.dirname(__file__)
     
-    # Copy static files to public directory
+    # Get basepath from CLI argument, default to /
+    basepath = "/"
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    
+    print(f"Building site with basepath: {basepath}")
+    
+    # Copy static files to docs directory
     static_source = os.path.join(root_dir, "..", "static")
-    public_dest = os.path.join(root_dir, "..", "public")
+    docs_dest = os.path.join(root_dir, "..", "docs")
     
     print("=== Copying static files ===")
-    copy_files_recursive(static_source, public_dest)
+    copy_files_recursive(static_source, docs_dest)
     
     # Generate pages recursively from all markdown files in content directory
     print("\n=== Generating pages ===")
     content_dir = os.path.join(root_dir, "..", "content")
     template_path = os.path.join(root_dir, "..", "template.html")
-    public_dir = os.path.join(root_dir, "..", "public")
+    docs_dir = os.path.join(root_dir, "..", "docs")
     
-    generate_pages_recursive(content_dir, template_path, public_dir)
+    generate_pages_recursive(content_dir, template_path, docs_dir, basepath)
     
     print("\n=== Static site generation complete! ===")
 
